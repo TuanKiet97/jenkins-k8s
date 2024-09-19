@@ -30,7 +30,7 @@ spec:
       name: jenkins-home
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      # storageClassName: retained
+      storageClassName: retained
       resources:
         requests:
           storage: 2Gi
