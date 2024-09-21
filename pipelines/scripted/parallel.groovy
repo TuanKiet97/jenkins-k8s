@@ -1,6 +1,10 @@
 /* groovylint-disable DuplicateStringLiteral */
 podTemplate(
   name: 'build',
+  yaml: '''
+spec:
+  terminationGracePeriodSeconds: 2
+  ''',
   containers: [ containerTemplate(name: 'jdk', image: 'eclipse-temurin', ttyEnabled: true, command: 'cat') ]
 ) {
   node(POD_LABEL) {
