@@ -27,3 +27,43 @@ kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisione
 
 kubectl port-forward pod/jenkins-0 8080:8080
 
+# Install helm
+
+helm repo ls
+
+helm repo add jenkins https://charts.jenkins.io 
+
+helm repo update
+
+helm search repo
+
+helm install jenkins1 jenkins/jenkins
+
+1. Get your 'admin' user password by running:
+  kubectl exec --namespace default -it svc/jenkins1 -c jenkins -- /bin/cat /run/secrets/additional/chart-admin-password && echo
+2. Get the Jenkins URL to visit by running these commands in the same shell:
+  echo http://127.0.0.1:8080
+  kubectl --namespace default port-forward svc/jenkins1 8080:8080
+
+helm uninstall jenkins1
+
+helm list -A
+
+helm install jenkins1 jenkins/jenkins -n jenkins-ns --create-namespace
+
+# Add new plugin by upgrading the new value into chart
+helm upgrade -n jenkins-ns jenkins1 jenkins/jenkins --values values/additional-plugins.yaml
+
+Change the configmap: kubectl get -n jenkins-ns cm/jenkins1 -o yaml
+
+Change the password: kubectl get -n jenkins-ns secret/jenkins1 -o yaml
+
+
+# Check password
+kubectl get -n jenkins-ns secret/jenkins1 -o yaml | grep jenkins-admin-password | cut -d ':' -f2
+
+echo $PW | base64 -d
+
+# Restart sts for loading the configuration
+
+kubectl rollout restart -n jenkins-ns sts/jenkins1
